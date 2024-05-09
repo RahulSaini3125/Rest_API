@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .body{
+            padding: 20px;
+            text-transform: capitalize;
+        }
+        .brand-content{
+            display: block;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+        }
+        .brand-name{
+            width: 100%;
+            background: #f8efea;
+            color: black;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 3em;
+        }
+        .welcome-content{
+            margin-top: 30px;
+            font-size: 2rem;
+        }
+        .username{
+            margin-top: 40px;
+            font-size: 2rem;
+        }
+        .message{
+            font-size: 2rem;
+            margin-top: 30px;
+        }
+        .btn{
+            align-self: center;
+            border-radius: 0px;
+            padding: 10px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #fff;
+            transition: 350ms;
+            letter-spacing: 1px;
+            font-size: 13px;
+            border: 1px solid transparent;
+            background-color: #ce8460;
+            display: block;
+            text-decoration: none;
+            width: 150px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="body">
+    <div class="brand-content">
+        <h1 class="brand-name">
+            Revlove
+        </h1>
+        <h2 class="welcome-content">
+            Welcome To Revlove Blog Post
+        </h2>
+    </div>
+    <h3 class="username">
+        Hi, {{username}}
+    </h3>
+    <p class="message">
+        welcome from Team Revlove Personal Blog!
+    </p>
+    <p class="message">
+        We’re thrilled to have you with us. Get ready for a memorable time and a great experience.
+    </p>
+    <div style=" display: flex; text-align: center ; margin-top: 20px;">
+        <a href="{{url}}" class="btn">Go To Profile</a>
+    </div>
+</body>
+</html>

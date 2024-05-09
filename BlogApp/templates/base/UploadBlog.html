@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block page_title %}
+Upload Blog
+{% endblock %}
+
+
+{% block navblock %}
+        {% include 'blog1/nav_content.html'%}
+{% endblock navblock %}
+
+{% block content %}
+
+
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-lg-8">
+        <h2 class="mb-4">Update Blog</h2>
+
+        <!-- <form id="contact-form" class="contact-form" method="post" enctype="multipart/form-data"> -->
+            <div class="row">
+                <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Images (required)</label>
+                            <input class="form-control form-control-name" name="Blogimages" id="imageUrl" type="file"
+                                accept="image/*" value="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Blog Type (required)</label>
+                            <select name="" id="BlogType" required>
+                                <option value="" selected >-----------</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Title (required)</label>
+                            <input class="form-control form-control-name" name="BlogTitle" id="Title" type="text" value=""
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Description (required)</label>
+
+                            <input class="form-control form-control-email" name="BlogDescription" id="Description" type="text" value=""
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Content Heading (required)</label>
+                            <input class="form-control form-control-name" name="BlogContentHeading" id="ContentHeading"
+                                type="text" value="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Content</label>
+                            <textarea class="form-control form-control-message" name="BlogContent"  id="Content" rows="7" required>
+                            </textarea>
+                        </div>
+                        <input class="btn btn-primary solid blank mt-3" onclick="UploadBlog()" type="submit" value="Upload Blog">
+                        <!-- <button class="btn btn-primary solid blank mt-3" type="submit"> Upload Blog </button> -->
+
+                    </form>
+                </div>
+            </div>
+        <!-- </form> -->
+    </div>
+</div>
+</div>
+
+
+{% endblock content %}
+
+
+{% block scriptblock %}
+
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=index";
+		}
+
+</script>
+
+<script>
+    $.ajax({
+        url:'/api/category/',
+        type : 'GET',
+        headers: {
+        "Authorization": "Bearer " + sessionStorage.getItem('token')},
+        success : function(response,t,xhr){
+            if (xhr.status== 200){
+                for (let index = 0; index < response.length; index++) {
+                    $('#BlogType').append(' <option value='+ response[index].id +'>'+ response[index].Category + '</option>')
+                }
+            }
+        }
+    })
+</script>
+
+
+
+<script>
+    function UploadBlog(){
+        console.log($('#Title').val())
+        console.log($('#Description').val())
+        console.log($('#ContentHeading').val())
+        console.log($('#Content').val())
+        console.log($('#imageUrl')[0].files[0])
+        console.log($('#BlogType').val())
+
+        // Create a FormData object
+        if ($.trim($('#BlogType').val())) {
+            var formData = new FormData();
+            // Append form data including the file
+            formData.append('Blog_title', $('#Title').val());
+            formData.append('Blog_description', $('#Description').val());
+            formData.append('Blog_content_heading', $('#ContentHeading').val());
+            formData.append('Blog_content', $('#Content').val());
+            formData.append('Blog_images', $('#imageUrl')[0].files[0]); // Append the file
+            formData.append('Blog_Category', $('#BlogType').val());
+
+            $.ajax({
+                url : '/api/blog/',
+                type : 'POST',
+                headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+                data : formData, // Use formData instead of directly passing the file object
+                contentType: false, // Set contentType to false, FormData will set it automatically
+                processData: false, // Set processData to false, prevent jQuery from automatically transforming the data into a query string
+                success : function(data, status, xhr){
+                    if (xhr.status == 201) {
+                        localStorage.setItem('message','Create Successfully')
+                        window.location.href = '/Blog/?blog='+data.data.Blog_slug
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                }
+            });
+        }
+    }
+</script>
+
+
+{% endblock %}
+
+{% block footerblock %}
+
+            {% include 'blog1/footer_content.html'%}
+    {% endblock footerblock %}

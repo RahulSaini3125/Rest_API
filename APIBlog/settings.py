@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 import os
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'API',
-    'rest_framework'
+    'rest_framework',
+    'BlogApp',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'APIBlog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR,'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,3 +154,19 @@ CKEDITOR_UPLOAD_PATH="uploads/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST= 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = env('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+
+# DEFAULT_FROM_EMAIL = 'donotreplyworldblog@gmail.com'
+
+# JWT Authentication
+SIMPLE_JWT = { "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+              "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+              "ROTATE_REFRESH_TOKENS": False,
+              "BLACKLIST_AFTER_ROTATION": False,
+              "UPDATE_LAST_LOGIN": False,}
+    

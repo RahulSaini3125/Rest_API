@@ -1,0 +1,173 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block page_title %}
+Home
+{% endblock %}
+
+
+{% block navblock %}
+{% include 'blog1/nav_content.html'%}
+{% endblock navblock %}
+
+
+{% block content %}
+	<!-- <section class="slider mt-4">
+		<div class="container-fluid">
+			<div class="row no-gutters">
+				<div class="col-lg-12 col-sm-12 col-md-12 slider-wrap" id="blog_sec">
+				</div>
+			</div>
+		</div>
+	</section> -->
+
+
+<div style="display: flex; justify-content: end; padding-right: 50px; ">
+	<div class="text-right search d-flex mt-3">
+		<div class="col-md-12 col-9">
+			<input type="search" class="form-control" name="Blog_title" id="search_place" placeholder="Search..." /> 
+		</div>
+	</div>
+</div>
+
+
+
+	<section class="section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="row" id="row">
+						<!-- Blog From javascript -->
+					</div>
+				</div>
+
+				<div class="m-auto">
+					<div class="pagination mt-5 pt-4">
+						<ul class="list-inline">
+							{% if nextblog.next_blog.has_previous %}
+							<li class="list-inline-item"><a href="?sort={{sort}}&page={{nextblog.next_blog.previous_page_number}}" class="prev-posts"><i class="ti-arrow-left"></i></a></li>
+							{% endif %}
+							{% for i in nextblog.pages %}
+							{% if i == page %}
+							<li class="list-inline-item"><a href="?sort={{sort}}&page={{i}}" class="active" >{{i}}</a></li>
+							{% else %}
+							<li class="list-inline-item"><a href="?sort={{sort}}&page={{i}}" >{{i}}</a></li>
+							{% endif %}
+							{% endfor %}
+							{% if nextblog.next_blog.has_next %}
+							<li class="list-inline-item"><a href="?sort={{sort}}&page={{nextblog.next_blog.next_page_number}}" class="prev-posts"><i class="ti-arrow-right"></i></a></li>
+							{% endif %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{% endblock content %}
+
+	{% block scriptblock %}
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=index";
+		}
+
+</script>
+
+<script>
+	function blog_display(data){
+		// $('#blog_sec').empty();
+		$('#row').empty();
+		blog = ''
+		blog2 = ''
+				for (let index = 0; index < data.length; index++) {
+					blog += '<div class="slider-item">'
+					blog += '<div class="slider-item-content">'
+					blog += '<div class="post-thumb mb-4">'
+					blog += '<a href="'+ data[index].Blog_images+'">'
+					blog += '<img src="'+ data[index].Blog_images +'" alt="" style="height: 341px; width: 341px;" class="img-fluid">'
+					blog += '</a>'
+					blog += '</div>'
+					blog += '<div class="slider-post-content">'
+					blog += '<span class="cat-name text-color font-sm font-extra text-uppercase letter-spacing">'+ data[index].Blog_Category +'</span>'
+					blog += '<h3 class="post-title mt-1"><a href="'+ data[index].Blog_images +'">'+ data[index].Blog_title +'</a></h3>'
+					blog += '<span class=" text-muted  text-capitalize">'+ data[index].BLog_upload_date+'</span>'
+					blog += '</div>'
+					blog += '</div>'
+					blog += '</div>'
+
+
+					blog2 += '<div class="col-lg-3 col-md-6 h-100"> <article class="post-grid mb-5"> <a class="post-thumb mb-4 d-block " href="/Blog/?blog='+ data[index].Blog_slug +'"><img src="'+ data[index].Blog_images +'" alt="" style="height: 282px; width : 300px;" class="img-fluid w-100 "> </a> <span class="cat-name text-color font-extra text-sm text-uppercase letter-spacing-1">'+ data[index].Blog_Category +'</span> <h3 class="post-title mt-1"><a href="/Blog/?blog='+ data[index].Blog_slug +'"> '+ data[index].Blog_title +' </a></h3> <span class="text-muted letter-spacing text-uppercase font-sm">'+ data[index].BLog_upload_date +'</span> </article> </div>'
+				}
+				$('#blog_sec').append(blog);
+				$('#row').append(blog2);
+	}
+</script>
+
+
+	<script>
+        document.getElementById("search_place").addEventListener("keyup", function() {
+            // Get the value of the search field
+            var id = this.value;
+            
+            // Perform your desired action here, for example, alert the ID
+            console.log(id)
+			$.ajax({
+			url: '/api/blog/?search='+id,
+			type: 'GET',
+			headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+			success: function(data,t,xhr){
+				if (xhr.status == 200) {
+					blog_display(data)
+				}
+				else{
+					console.log('Something Went Wrong')
+				}
+			}
+		})
+            
+            // You can also call a function or make an AJAX request to fetch data based on the ID
+        });
+    </script>
+
+<script>
+    function singleCategory(id){
+        console.log(id)
+		$.ajax({
+			url: '/api/blog/?Category='+id,
+			type: 'GET',
+			headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+			success: function(data,t,xhr){
+				blog_display(data)
+		}
+	})
+	}
+</script>
+
+
+	<script>
+		$.ajax({
+			url: '/api/blog',
+			type: 'GET',
+			headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+			success: function(data,t,xhr){
+				console.log(data)
+				blog_display(data)
+		}
+	})
+	</script>
+ 
+	{% endblock %}
+
+
+	{% block footerblock %}
+
+	{% include 'blog1/footer_content.html'%}
+
+	{% endblock footerblock %}

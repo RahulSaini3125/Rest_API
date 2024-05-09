@@ -1,0 +1,229 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+{% block page_title %}
+{{userid.get_full_name}}
+{% endblock %}
+
+{% block navblock %}
+        {% include 'blog1/nav_content.html'%}
+{% endblock navblock %}
+
+
+{% block content %}
+
+<div class="profile">
+    <div class="col-lg-8">
+        <div class="card mb-4 mb-lg-0">
+            <div class="profile-content">
+                <div class="col-lg-4">
+                    <div class="card"  style="border: 0px;" >
+                        <div class="card-body text-center" id="user_profile" >
+                            <h2 class="my-3" id="user_full_name"  >
+                                <!-- javascript -->
+                            </h2>
+                            <p class="text-muted mb-1" id="bloger_name" >
+                                <!-- javascript -->
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body mt-4">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p class="text-muted mb-0" id="email_id">
+                                <!-- javascript -->
+                            </p>
+                            <a href="{% url 'change' %}?=email" >
+                                <i class="ti-email"></i>
+                                Change Email</a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Total Blog</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p class="text-muted mb-0" id="total_blog" > Number of Blog</p>
+                            <a href="{% url 'Upload' %}">
+                                <i class="ti-plus"></i> Add More Blog
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Account Active</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p id="Account_status" class="text-muted mb-0">
+                                <!-- javascript -->
+                            </p>
+                            <a class="text-danger" href="">
+                                <i class="ti-na"></i>
+                                Delete Account</a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">About You</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p id="about_you" class="text-muted mb-0">
+                                about You
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Password</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">
+                                <a name="Change" href="{% url 'change' %}?=password">Change Password</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<section class="section">
+    <div style="display: flex; justify-content: end; padding-right: 25px; " class="mb-5">
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By:
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="?sort=ByNameAsc"> By Name <i class="ti-arrow-up"></i> </a></li>
+                <li><a class="dropdown-item" href="?sort=ByNameDesc"> By Name <i class="ti-arrow-down"></i> </a></li>
+                <li><a class="dropdown-item" href="?sort=ByDateAsc"> By Date <i class="ti-arrow-up"></i> </a></li>
+                <li><a class="dropdown-item" href="?sort=ByDateDesc"> By Date <i class="ti-arrow-down"></i> </a></li>
+                <li><a class="dropdown-item" href="?sort=ByMostLike"> By Most Like</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row" id="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="pagination d-flex justify-content-center">
+        <ul class="list-inline">
+                        {% if nextblog.has_previous %}
+                        <li class="list-inline-item"><a href="?page={{nextblog.previous_page_number}}" class="prev-posts"><i class="ti-arrow-left"></i></a></li>
+                        {% endif %}
+                        {% for i in pages %}
+                        <li class="list-inline-item"><a href="?page={{i}}" class="active">{{i}}</a></li>
+                        {% endfor %}
+                        {% if nextblog.has_next %}
+                        <li class="list-inline-item"><a href="?page={{nextblog.next_page_number}}" class="prev-posts"><i class="ti-arrow-right"></i></a></li>
+                        {% endif %}
+        </ul>
+    </div>
+</section>
+
+
+
+
+{% endblock content %}
+
+{% block scriptblock %}
+
+
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=profile";
+		}
+    if(localStorage.getItem('delete_message')){
+        showNotification(localStorage.getItem('delete_message'),true)
+        localStorage.removeItem('delete_message')
+    }
+</script>
+
+<script>
+    function change_email(){
+        console.log('email')
+        localStorage.setItem('email',true)
+        window.location.href = "/change/"
+    }
+</script>
+
+<script>
+	function blog_display(data){
+		$('#row').empty();
+		blog2 = ''
+				for (let index = 0; index < data.length; index++) {
+					blog2 += '<div class="col-lg-3 col-md-6"> <article class="post-grid mb-5"> <a class="post-thumb mb-4 d-block " href="/Blog/?blog='+ data[index].Blog_slug +'"><img src="'+ data[index].Blog_images +'" alt="" style="height: 182px;" class="img-fluid w-100 "> </a>  <div class="edit-delete"> <a href="/Delete/?blog='+data[index].Blog_slug+'"> <i class="ti-trash"></i> </a> <a href="/EditBlog/?blog='+data[index].Blog_slug+'" > <i class="ti-pencil-alt"></i> </a> </div> <span class="cat-name text-color font-extra text-sm text-uppercase letter-spacing-1">'+ data[index].Blog_Category +'</span> <h3 class="post-title mt-1"><a href="/Blog/?blog='+ data[index].Blog_slug +'"> '+ data[index].Blog_title +' </a></h3> <span class="text-muted letter-spacing text-uppercase font-sm">'+ data[index].BLog_upload_date +'</span> </article> </div>'
+				}
+				$('#row').append(blog2);
+	}
+</script>
+
+
+<script>
+    if (sessionStorage.getItem('token')) {
+        $.ajax({
+            url: '/api/user/',
+            type : 'GET',
+            headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+            success: function(response,t,xhr){
+                console.log(response.data)
+                if (xhr.status == 200) {
+                    $('#email_id').html(response.data.email)
+                    $('#about_you').html(response.data.aboutYou)
+                    $('#bloger_name').html(response.data.bloger_name)
+                    $('#user_full_name').html(response.data.first_name + ' ' +response.data.last_name)
+                    if (response.data.is_active) {
+                        $('#Account_status').html('Active')
+                    }
+                    if (response.data.user_profile) {
+                        $('#user_profile').prepend(' <img src="'+ response.data.user_profile +'"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">')
+                    }
+                    else{
+                        $('#user_profile').prepend(' <img src="{% static "images/blog-user-2.jpg" %}"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">')
+                    }
+                }
+            }
+        })
+        $.ajax({
+            url: '/api/userblog/',
+            type : 'GET',
+            headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+            success : function(data,t,xhr){
+				if (xhr.status == 200) {
+					blog_display(data)
+                    $('#total_blog').html(data.length)
+				}
+				else{
+					console.log('Something Went Wrong')
+				}
+            }
+        })
+
+    }
+</script>
+
+{% endblock scriptblock %}
+
+{% block footerblock %}
+
+            {% include 'blog1/footer_content.html'%}
+    {% endblock footerblock %}

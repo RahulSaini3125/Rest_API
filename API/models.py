@@ -69,7 +69,7 @@ class BlogModels(models.Model):
     Blog_description = models.CharField(max_length = 400)
     Blog_slug = models.CharField(max_length = 200, unique = True, null = True, blank = True)
     Blog_content_heading = models.CharField(max_length = 100)
-    Blog_content = RichTextUploadingField()
+    Blog_content = models.CharField(null=True,blank=True)
     Blog_images = models.ImageField(upload_to='media/')
     Blog_Category = models.ForeignKey(CategoryModels, on_delete = models.PROTECT)
     BLog_upload_date = models.DateField(auto_now_add = True)
@@ -92,6 +92,6 @@ class BlogModels(models.Model):
 
 class Comment(models.Model):
     comment = models.CharField(max_length = 1000)
-    comment_on = models.DateTimeField(auto_now_add = True)
+    comment_on = models.DateField(auto_now_add = True)
     blog = models.ForeignKey(BlogModels, on_delete = models.CASCADE)
     comment_by = models.ForeignKey(User, on_delete= models.PROTECT)

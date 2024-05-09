@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      {% block page_title %}
+      {% endblock %}
+    </title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!--Favicon-->
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+
+    <!-- THEME CSS
+	================================================== -->
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}"
+    />
+    <!-- Option 1: Include in HTML -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- Themify -->
+    <link
+      rel="stylesheet"
+      href=" {% static 'plugins/themify/css/themify-icons.css' %} "
+    />
+    <link
+      rel="stylesheet"
+      href=" {% static 'plugins/slick-carousel/slick-theme.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href=" {% static 'plugins/slick-carousel/slick.css' %}"
+    />
+    <!-- Slick Carousel -->
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/owl-carousel/owl.carousel.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/owl-carousel/owl.theme.default.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/magnific-popup/magnific-popup.css' %}"
+    />
+    <!-- manin stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+
+    <div id="notification_container" >
+    </div>
+
+    
+    {% block navblock %}
+      
+    {% endblock navblock %} 
+
+
+	{% block content %} 
+
+  {% endblock %} 
+
+  
+  {% block footerblock %}
+    
+  {% endblock footerblock %}
+    
+
+		<!-- THEME JAVASCRIPT FILES
+================================================== -->
+	<!-- initialize jQuery Library -->
+	<script src="{% static 'plugins/jquery/jquery.js' %}"></script>
+	<!-- Bootstrap jQuery -->
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'plugins/bootstrap/js/popper.min.js' %}"></script>
+	<!-- Owl caeousel -->
+	<script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'plugins/slick-carousel/slick.min.js' %}"></script>
+	<script src="{% static 'plugins/magnific-popup/magnific-popup.js' %}"></script>
+	<!-- Instagram Feed Js -->
+	<script src="{% static 'plugins/instafeed-js/instafeed.min.js' %}"></script>
+	<!-- Google Map -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC72vZw-6tGqFyRhhg5CkF2fqfILn2Tsw"></script>
+	<script src="{% static 'plugins/google-map/gmap.js' %}"></script>
+	<!-- main js -->
+	<script src="{% static 'js/custom.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- CKeditor -->
+  <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+  <!-- <script>
+    window.onload = function() {
+        CKEDITOR.replace('ContentEditor');
+        config.filebrowserBrowseUrl = '/MEDIA/uploads';
+        config.filebrowserUploadUrl = '/MEDIA/uploads';
+
+    }; -->
+</script>
+
+<script>
+function showNotification(message, status) {
+  const container = document.getElementById('notification_container');
+
+  // Clear all previous notifications
+  container.innerHTML = '';
+
+  // Create a new notification element
+  const notification = document.createElement('div');
+  notification.classList.add('notification');
+  
+  // Set background and border colors based on status
+  if (status) {
+    notification.style.background = '#4caf50';
+    notification.style.borderColor = '#4caf50';
+  } else {
+    notification.style.background = '#ff4d4d';
+    notification.style.borderColor = '#ff4d4d';
+  }
+
+  notification.style.color = 'white'
+  // Set notification message
+  notification.innerHTML = message;
+
+  // Add the new notification at the end of the container
+  container.appendChild(notification);
+
+  // Trigger animation by adding 'active' class after a slight delay
+  setTimeout(function() {
+    notification.classList.add('active');
+  }, 100); // Delay for smoothness
+
+  // Set timeout to close the notification after 5 seconds
+  setTimeout(function() {
+    closeNotification(notification);
+  }, 4000); // 5 seconds
+}
+
+
+function closeNotification(notification) {
+  // Remove 'active' class to trigger animation
+  notification.classList.remove('active');
+
+  // Remove the notification after animation
+  setTimeout(function() {
+    const container = document.getElementById('notification_container');
+    container.removeChild(notification);
+  }, 1000); // Adjust this value to match the duration of your animation
+}
+
+
+  // showNotification('s',true)
+
+  </script>
+
+
+ {% block scriptblock %}
+ 
+ {% endblock %}
+  </body>
+</html>

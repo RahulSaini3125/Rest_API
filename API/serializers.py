@@ -6,6 +6,7 @@ class BlogModelsSerializer(serializers.ModelSerializer):
         model = BlogModels
         fields = "__all__"
 
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length= 20, write_only= True)
@@ -20,3 +21,8 @@ class CategoryModelsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryModels
         fields = "__all__"
+
+class UserModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

@@ -10,4 +10,6 @@ urlpatterns = [
     path('category/<int:id>', CategoryAPI.as_view(), name ="addcategory"),
     path('like/<str:slug>', LikeBlogAPI.as_view(), name ="like"),
     path('dlike/<str:slug>', DLikeBlogAPI.as_view(), name ="dlike"),
+    path('user/', GetUserDetailsAPI.as_view(), name ="user"),
+    path('userblog/', UserBlogAPI.as_view(), name ="userblog"),
 ]

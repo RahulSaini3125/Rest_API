@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<div class="form-content">
+    <div class="col-lg-4">
+
+        <h2 class="mb-4">Login</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control form-control-name" id="email" name="email"
+                            placeholder="Enter Your Email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password1"> Password:</label>
+                        <input type="password" name="password1" class="form-control form-control-name"
+                            id="Password1" placeholder="Enter Your Password">
+                    </div>
+                    <div class="form-group justify-space-between">
+                        <input type="submit" id="submit_btn" class="btn btn-primary solid blank mt-3" value="Submit">
+                        <a href="{% url 'ResetPassword'  %}">Forget Password ?</a>
+
+                    </div>
+                </div>
+            </div>
+        <div>
+            <p class="text-center mt-5">
+                Don't Have A Account! <a href="{% url 'SignUp'%}"> SignUp</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block scriptblock %}
+
+
+
+<script>
+    if (sessionStorage.getItem('token')) {
+        window.location.href = '/index/'
+    }
+    $('#submit_btn').click(function(){
+        user_email = document.getElementById('email')
+        user_password = document.getElementById('Password1')
+        if (user_email.value == '' ){
+            showNotification('Please Enter Email Id')
+            console.log('plase Email Id')
+        }
+        else{
+            email = user_email.value
+            if (user_password.value == ''){
+                showNotification('Please Enter Password')
+            console.log('please Enter Password')
+        }
+        else{
+            password = user_password.value
+            login_submit(email,password)
+        }
+        }
+    })
+
+    function login_submit(email,password){
+        $.ajax({
+            url : '/api/login/',
+            type : 'POST',
+            data :{
+                'email' : email,
+                'password' : password
+            },
+            success : function(data, test, xhr){
+                if (xhr.status == 202){
+                    sessionStorage.setItem('token',data.token)
+                    const urlparam = new URLSearchParams(window.location.search)
+                    const next = urlparam.get('next')
+                    if (data.token){
+                        if (next == 'index') {
+                            window.location.href = '/index/' 
+                        }
+                        else if (next == 'profile') {
+                            window.location.href = '/Profile/'
+                        }
+                        else if (next == 'Blog') {
+                            slug = urlparam.get('title')
+                            window.location.href = '/Blog/?blog='+slug
+                        }
+                        else{
+                            window.location.href = '/index/'
+                        }
+                    }
+                }
+                else{
+                    showNotification('some',false)
+                }
+            },
+            error : function (xhr, textStatus, errorThrown) {
+                if (xhr.status == 401) {
+                    showNotification(xhr.responseJSON.message,false)
+                }
+                else{
+                    showNotification('Something Went Wrong Please Try Again.',false)
+                }
+            }
+        })
+    }
+</script>
+
+{% endblock %}

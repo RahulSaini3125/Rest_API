@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+
+{% block page_title %}
+Delete Blog: {{deleteblog.Blog_title}}
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; position: absolute; top: 20%; left: 40%;">
+    <p>
+        Are You Sure to Delete This Blog
+    </p>
+    <div style="display: flex; flex-direction: column;">
+        <p>
+            Blog Title : <span id="Title" ></span>
+        </p>
+        <p>
+            Blog Upload By : <span id="UploadBy" ></span>
+        </p>
+        <p>
+            Blog Upload On : <span id="UploadOn" ></span>
+        </p>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+        <input type="submit" onclick="DeleteBlog()" class="btn btn-danger" value="Delete">
+    </div>
+</div>
+{% endblock content %}
+
+{% block scriptblock %}
+
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=index";
+		}
+        const urlparam = new URLSearchParams(window.location.search)
+    const slug = urlparam.get('blog')
+</script>
+
+<script>
+    $.ajax({
+    url: '/api/blog/'+slug,
+    type : 'GET',
+    headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+    success: function(data,t,xhr){
+      if (xhr.status == 200){
+        console.log(data.Blog)
+        $('#Title').append(data.Blog.Blog_title)
+        $('#UploadBy').append(data.Blog.Blog_upload_by)
+        $('#UploadOn').append(data.Blog.BLog_upload_date)
+      }
+    }
+})
+</script>
+
+<script>
+    function DeleteBlog(){
+        $.ajax({
+            url: '/api/blog/'+slug,
+            type : 'DELETE',
+            headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+            success : function(data,t,xhr){
+                if (xhr.status == 200) {
+                    localStorage.setItem('delete_message','your blog is delete')
+                    window.location.href = '/Profile/'
+                }
+                else{
+                    showNotification(xhr.responseJSON.message,false)
+                    console.log('Something Went Wrong')
+                }
+            }
+        })
+    }
+</script>
+
+{% endblock %}

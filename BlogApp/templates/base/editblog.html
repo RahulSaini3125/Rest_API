@@ -1,0 +1,160 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block page_title %}
+Edit Blog
+{% endblock %}
+
+{% block navblock %}
+        {% include 'blog1/nav_content.html'%}
+{% endblock navblock %}
+
+{% block content %}
+
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-lg-8">
+        <form id="myForm" enctype="multipart/form-data">
+            <h2 class="mb-4">Update Blog</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="image" id="Uploadimage" alt="" style="width: 900px;">
+                        </div>
+
+                            <div class="form-group">
+                                <label for="name">Images (required)</label>
+                                <input class="form-control form-control-name" name="Blogimages" id="imageUrl" type="file"
+                                    accept="image/*" value="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Blog Type (required)</label>
+                                <input class="form-control form-control-name" style="cursor: not-allowed;" name="BlogTitle" id="BlogTitle" disabled type="text" value="">
+                                <input type="hidden" name="" id="BlogTitleId" value="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Title (required)</label>
+                                <input class="form-control form-control-name" name="BlogTitle" id="Title" type="text" value=""
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Description (required)</label>
+
+                                <input class="form-control form-control-email" name="BlogDescription" id="Description" type="text" value=""
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Content Heading (required)</label>
+                                <input class="form-control form-control-name" name="BlogContentHeading" id="ContentHeading"
+                                    type="text" value="" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Content</label>
+                                <textarea class="form-control form-control-message" name="BlogContent"  id="Content" rows="7" required>
+                                </textarea>
+                            </div>
+                            <!-- <input class="btn btn-primary solid blank mt-3" id="update-button" type="submit" value="Upload Blog"> -->
+                            <button class="btn btn-primary solid blank mt-3" id="update-button" > Upload Blog </button>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+
+
+{% endblock content %}
+
+{% block scriptblock %}
+
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=index";
+		}
+    const urlparam = new URLSearchParams(window.location.search)
+    const slug = urlparam.get('blog')
+</script>
+
+<script>
+    $.ajax({
+    url: '/api/blog/'+slug,
+    type : 'GET',
+    headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+    success: function(data,t,xhr){
+      if (xhr.status == 200){
+        console.log(data.Blog)
+        $('#BlogTitle').val(data.Blog.Blog_Category_name)
+        $('#BlogTitleId').val(data.Blog.Blog_Category)
+        $('#Title').val(data.Blog.Blog_title)
+        $('#Description').val(data.Blog.Blog_description)
+        $('#ContentHeading').val(data.Blog.Blog_content_heading)
+        $('#Content').val(data.Blog.Blog_content)
+        $('#Uploadimage').attr('src',data.Blog.Blog_images)
+      }
+    }
+})
+
+$('#myForm').submit(function() {
+    event.preventDefault();
+    var formData = new FormData()
+    // Append other form fields data to FormData object
+    formData.append('Blog_Category', $('#BlogTitleId').val());
+    formData.append('Blog_title', $('#Title').val());
+    formData.append('Blog_description', $('#Description').val());
+    formData.append('Blog_content_heading', $('#ContentHeading').val());
+    formData.append('Blog_content', $('#Content').val());
+    // formData.append('Blog_images', $('#Uploadimage').attr('src'));
+    // Check if a new image is selected
+    var imageUrl = document.getElementById('imageUrl').files[0];
+    if (imageUrl) {
+        // Append the image file to FormData object
+        formData.append('Blog_images', imageUrl);
+    }
+    //     // If no new image selected, append the URL of the existing image
+    //     formData.append('Blog_images', $('#Uploadimage').attr('src'));
+    // }
+    // console.log(formData)
+    // Perform AJAX request to update the blog post
+    $.ajax({
+        url: '/api/blog/' + slug, // Assuming 'slug' contains the ID of the blog post
+        type: 'PUT', // Use PUT method for updating data
+        headers: {'Authorization': "Bearer " + sessionStorage.getItem('token')},
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            // Handle success response
+            localStorage.setItem('update_blog','Blog post updated successfully')
+            window.location.href = '/Blog/?blog='+slug
+            console.log('Blog post updated successfully');
+            // Optionally, redirect to another page or display a success message
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            // Handle error response
+            showNotification(xhr.responseJSON.message,false)
+            console.error('Error updating blog post:', errorThrown);
+            // Optionally, display an error message to the user        
+        }
+    });
+});
+
+</script>
+
+
+
+{% endblock %}
+
+
+{% block footerblock %}
+
+            {% include 'blog1/footer_content.html'%}
+    {% endblock footerblock %}

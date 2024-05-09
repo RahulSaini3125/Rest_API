@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block navblock %}
+        {% include 'blog1/nav_content.html'%}
+{% endblock navblock %}
+
+
+{% block content %}
+
+<div class="profile">
+    <div class="col-lg-8">
+        <div class="card mb-4 mb-lg-0">
+            <div class="profile-content">
+                <div class="col-lg-4">
+                    <div class="card"  style="border: 0px;" >
+                        <div class="card-body text-center">
+                            {% if userid.user_profile.url is not none %}
+                            <img src="{{userid.user_profile.url}}"
+                                alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">
+                                {% else %}
+                                <img src="{% static 'images/blog-user-2.jpg' %}"
+                                alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">
+                                {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body mt-4">
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Name</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p class="text-muted mb-0">{{userid.get_full_name}}</p>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Bloger</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p class="text-muted mb-0">{{userid.bloger_name}}</p>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Total Blog</p>
+                        </div>
+                        <div class="col-sm-9 d-flex justify-space-between">
+                            <p class="text-muted mb-0">{{total}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">About</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">
+                                {{userid.aboutYou}}
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    {% for blog in blogs %}
+                    <div class="col-lg-3 col-md-6">
+                        <article class="post-grid mb-5">
+                            <a class="post-thumb mb-4 d-block" href="{% url 'BlogRead' blog.Blog_slug %}">
+                                <img src="{{blog.Blog_images.url}}" style="height: 182px;" alt="" class="img-fluid w-100">
+                            </a>
+                            <span
+                                class="cat-name text-color font-extra text-sm text-uppercase letter-spacing-1">{{blog.Blog_Category.Category}}</span>
+                            <h3 class="post-title mt-1"><a
+                                    href="{% url 'BlogRead' blog.Blog_slug %}">{{blog.Blog_title}}</a></h3>
+
+                            <span
+                                class="text-muted letter-spacing text-uppercase font-sm">{{blog.BLog_upload_date}}</span>
+
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+{% endblock content %}
+
+
+
+{% block footerblock %}
+
+            {% include 'blog1/footer_content.html'%}
+    {% endblock footerblock %}
