@@ -4,16 +4,22 @@ from django.contrib.auth.base_user import BaseUserManager
 from .helper import ConvertTextToSlug
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.urls import reverse
-
+import random
+import string
 
 # Create your models here.
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
+    def _generate_user_id(self):
+        return ''.join(random.choices(string.digits, k=6))
+
     def _create_user(self, email, password,**extra_field):
         if  not email:
             raise ValueError('Email Field is required')
         email = self.normalize_email(email)
+        user_id = self._generate_user_id()  # Generate unique 6-digit user_id
+        extra_field.setdefault('user_id', user_id)
         user = self.model(email = email, **extra_field)
         user.set_password(password)
         user.save(using = self.db)
@@ -41,6 +47,7 @@ class User(AbstractUser):
     bloger_name = models.CharField(max_length = 50, null = True, blank = True)
     aboutYou = models.TextField(max_length = 200, null = True, blank = True)
     user_profile = models.ImageField(upload_to='media/',null = True, blank= True)
+    user_id = models.IntegerField(null=True,blank=True)
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

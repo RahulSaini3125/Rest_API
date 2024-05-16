@@ -3,11 +3,39 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import BlogModels, Comment, CategoryModels, User
-from .serializers import BlogModelsSerializer, LoginSerializer, CommentSerializer, CategoryModelsSerializer, UserModelSerializer
+from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
+from random import randint
+from django.core.mail import send_mail
+from django.conf import settings
 # Create your views here.
 
+class AccountAPI(APIView):
+    def post(self, request):
+        serializer = UserModelSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            first_name = serializer.validated_data.get('first_name', '')  # Extract first_name if available
+            last_name = serializer.validated_data.get('last_name', '')  # Extract last_name if available
+            # Create the user
+            User = get_user_model()  # Get the custom user model
+            user = User.objects.create_user(email=email, password=password, first_name = first_name,last_name=last_name)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request):
+        print('5555555555555555555555555555555555555')
+        try:
+            print(request,"8888888888888888888888888888888888888888888")
+            user = User.objects.get(id = request.user.id)
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except get_user_model().DoesNotExist:
+                return Response({"error": "User notuuuuuuuuuuuuuuuu found."}, status=status.HTTP_404_NOT_FOUND)
+        
 
 class LoginAPi(APIView):
     def post(self, request):
@@ -18,11 +46,23 @@ class LoginAPi(APIView):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 access = RefreshToken.for_user(user= user)
-                return Response(status=status.HTTP_202_ACCEPTED, data={"token": str(access.access_token)})
+                return Response(status=status.HTTP_202_ACCEPTED, data={"token": str(access.access_token),'refresh_token':str(access)})
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,data={'message': 'Invalid credentials'})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+
+class LogoutAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            refresh_token_obj = RefreshToken(refresh_token)
+            refresh_token_obj.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": str(e)})
 
 class BlogAPI(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -238,3 +278,99 @@ class UserBlogAPI(APIView):
             else:
                         da['Blog_Category'] = None
         return Response(status = status.HTTP_200_OK,data=data)
+    
+
+class AboutUserAPI(APIView):
+    def get(self,request):
+        try:
+            id = request.GET.get('id')
+            Users = User.objects.get(user_id = id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'User Not Found','status':status.HTTP_400_BAD_REQUEST})
+        try: 
+            serializer_user = UserModelSerializer(Users,context ={'request':request})
+            category =  CategoryModels.objects.all()
+            search = request.GET.get('search')
+            blog = BlogModels.objects.filter(Blog_upload_by = Users)
+            serializer_blog  = BlogModelsSerializer(blog, many = True, context={'request':request})
+            data = serializer_blog.data
+            for da in data:
+                for cat in category:
+                        if da['Blog_Category'] == cat.id:
+                            da['Blog_Category']= cat.Category
+                            break
+                else:
+                            da['Blog_Category'] = None
+                return Response(status=status.HTTP_200_OK,data={'message':'Successfully','data':{'user':serializer_user.data,'blog':data}})
+        except Exception as e:
+                print(e)
+                return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'Something Went Wrong'})
+        
+
+class CheckEmailAvailability(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = EmailAvailabilitySerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            User = get_user_model()
+            try:
+                # Check if the email is already registered
+                user = User.objects.get(email=email)
+                return Response({"available": False}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                # If email is available, generate OTP and store it in the current user object
+                otp = self.generate_otp()
+                user = request.user
+                user.otp = otp
+                user.save()
+                subject = 'Your OTP for verification'
+                message = f'Your OTP is: {otp}'
+                recipient_list = [email]
+                # send_mail(
+                #     subject,
+                #     message,
+                #     settings.EMAIL_HOST_USER,  # Sender's email (configured in settings)
+                #     recipient_list,
+                #     fail_silently=False,
+                #     )
+                return Response({"available": True}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def generate_otp(self):
+        # Generate a random 6-digit OTP
+        return str(randint(100000, 999999))
+    
+
+
+class UserAboutYouUpdateAPIView(APIView):
+    def put(self, request, *args, **kwargs):
+        user = request.user  # Assuming the user is authenticated
+        serializer = UserAboutYouUpdateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class VerifyOTPAndUpdateEmail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = OTPVerificationSerializer(data=request.data)
+        if serializer.is_valid():
+            new_email = serializer.validated_data['new_email']
+            otp = int(serializer.validated_data['otp'])
+            user = request.user
+
+            # Check if the new email is already registered
+            if get_user_model().objects.exclude(pk=user.pk).filter(email=new_email).exists():
+                return Response({"error": "Email already registered."}, status=status.HTTP_400_BAD_REQUEST)
+            print(type(user.otp))
+            if user.otp == otp:
+                user.email = new_email
+                user.save()
+                return Response({"message": "Email updated successfully."}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

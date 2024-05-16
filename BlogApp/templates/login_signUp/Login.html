@@ -47,6 +47,18 @@
     if (sessionStorage.getItem('token')) {
         window.location.href = '/index/'
     }
+    if(localStorage.getItem('account_create')){
+        showNotification(localStorage.getItem('account_create'),true)
+        localStorage.removeItem('account_create')
+    }
+    if(localStorage.getItem('delete_message')){
+        showNotification(localStorage.getItem('delete_message'),true)
+        localStorage.removeItem('delete_message')
+    }
+    if(localStorage.getItem('new_email')){
+        showNotification(localStorage.getItem('new_email'),true)
+        localStorage.removeItem('new_email')
+    }
     $('#submit_btn').click(function(){
         user_email = document.getElementById('email')
         user_password = document.getElementById('Password1')
@@ -78,6 +90,7 @@
             success : function(data, test, xhr){
                 if (xhr.status == 202){
                     sessionStorage.setItem('token',data.token)
+                    sessionStorage.setItem('refresh_token',data.refresh_token)
                     const urlparam = new URLSearchParams(window.location.search)
                     const next = urlparam.get('next')
                     if (data.token){

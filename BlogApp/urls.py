@@ -16,7 +16,8 @@ urlpatterns = [
     path('Profile/', Profile_view, name='profile'),
     path('UploadBlog/', UploadBlog_view, name='Upload'),
     path('Delete/', delete_view, name='Delete'),
+    path('DeleteAccount/', delete_account_view, name='DeleteAccount'),
     path('EditBlog/', EditBlog_view, name='Edit'),
     path('Category/', Category_view, name='Category'),
-    path('AboutUser/<int:pk>', AboutUser_View, name='AboutUser'),
+    path('AboutUser/', AboutUser_View, name='AboutUser'),
 ]   

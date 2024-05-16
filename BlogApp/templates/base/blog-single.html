@@ -73,20 +73,6 @@
         <div class="sidebar sidebar-right">
           <div class="sidebar-wrap mt-5 mt-lg-0">
             <div class="sidebar-widget about mb-5 text-center p-3" id="about_author_blog">
-              <!-- <div class="about-author">
-                {% if userid.user_profile.url is not none %}
-                            <img src="{{userid.user_profile.url}}"
-                                alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">
-                                {% else %}
-                                <img src="{% static 'images/blog-user-2.jpg' %}"
-                                alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">
-                                {% endif %}
-              </div>
-              <h4 class="mb-0 mt-4"> <a href="">
-                {{blog.Blog_upload_by.get_full_name}}</h4>
-              </a>
-              <p>{{blog.Blog_upload_by.bloger_name}}</p>
-              <p>{{blog.Blog_upload_by.aboutYou}}</p> -->
             </div>
 
             <div class="sidebar-widget follow mb-5 text-center">
@@ -184,7 +170,7 @@
 			},
     success: function(data,t,xhr){
       if (xhr.status == 200){
-        console.log(data)
+        console.log(data.Blog.user.user_id)
         Blog = data.Blog.blog
         user = data.Blog.user
         $('#Category_div').append('<a class="post-category font-extra text-color text-uppercase font-sm letter-spacing-1" href="#" id="Category">'+ Blog.Blog_Category_name +' </a>')
@@ -214,7 +200,7 @@
             text += '<img src="{% static "images/blog-user-2.jpg" %}"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">'
           }
           text += '</div>'
-          text += '<h4 class="mb-0 mt-4"> <a href="">'+ user.first_name +' '+ user.last_name +'</h4></a>'
+          text += '<h4 class="mb-0 mt-4"> <a href="{% url "AboutUser" %}?profile='+ user.user_id +' ">'+ user.first_name +' '+ user.last_name +'</h4></a>'
           text += '<p>'+ user.bloger_name +'</p><p>' + user.aboutYou + '</p>'
           $('#about_author_blog').append(text)
         commentlist()

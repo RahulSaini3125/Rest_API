@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'API',
     'rest_framework',
     'BlogApp',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -155,11 +157,11 @@ CKEDITOR_UPLOAD_PATH="uploads/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST= 'smtp.gmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = env('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST= 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 # DEFAULT_FROM_EMAIL = 'donotreplyworldblog@gmail.com'
 
@@ -167,6 +169,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SIMPLE_JWT = { "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
               "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
               "ROTATE_REFRESH_TOKENS": False,
-              "BLACKLIST_AFTER_ROTATION": False,
-              "UPDATE_LAST_LOGIN": False,}
+              "BLACKLIST_AFTER_ROTATION": True,
+              "UPDATE_LAST_LOGIN": True,}
     

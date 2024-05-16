@@ -26,3 +26,19 @@ class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class EmailAvailabilitySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class UserAboutYouUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['aboutYou']
+
+class EmailAvailabilitySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class OTPVerificationSerializer(serializers.Serializer):
+    new_email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6)

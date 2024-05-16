@@ -92,6 +92,16 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.Add_about_you{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.Add_about_you:hover{
+  color: #ce8460 ;
+}
+
 body,
 p {
   font-family: "Open Sans", sans-serif;

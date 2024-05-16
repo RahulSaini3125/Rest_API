@@ -4,60 +4,24 @@
 
 {% block content %}
 
-
-    <!-- <section>
-        <div>
-            <H1>
-                Sign Up Form
-            </H1>
-        </div>
-    </section>
-    <form action="{% url 'SignUp' %}" method="post">
-        {% csrf_token %}
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" required name="email" placeholder="Enter Your Email">
-        </div>
-        <div>
-            <label for="password1"> Password:</label>
-            <input type="password" required name="password1" id="Password1" placeholder="Enter Your Password">
-        </div>
-        <div>
-            <label for="password2"> Confirm Password:</label>
-            <input type="password" required name="password2" id="Password2" placeholder="Enter Your Password">
-        </div>
-        <!-- {% for fm in form %}
-            {{fm.label_tag}}
-            {{fm}}
-            <br>
-            <br>
-        {% endfor%} -->
-        <!-- <input type="submit" value="Submit">
-    </form>
-    <div>
-        <p>
-            Have A Account! <a href="{% url 'Login'%}"> Login</a>
-        </p>
-    </div> -->
-
     <div class="form-content-signup">
         <div class="col-lg-4">
     
             <h2 class="mb-4">Sign Up</h2>
     
-            <form id="contact-form" action="{% url 'SignUp' %}" method="post" class="contact-form">
+            <form id="contact-form" class="contact-form">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-12">
 
                         <div class="form-group d-flex justify-space-between">
                             <div>
-                                <label for="email">First Name:</label>
-                                <input type="text" class="form-control form-control-name" name="firstname" required placeholder="Enter Your First Name">
+                                <label for="firstname">First Name:</label>
+                                <input type="text" class="form-control form-control-name" name="first_name" required placeholder="Enter Your First Name">
                             </div>
                             <div>
-                                <label for="email">Last Name:</label>
-                                <input type="text" class="form-control form-control-name" name="lastname" required placeholder="Enter Your Last Name">
+                                <label for="lastname">Last Name:</label>
+                                <input type="text" class="form-control form-control-name" name="last_name" required placeholder="Enter Your Last Name">
                             </div>
                         </div>
 
@@ -68,8 +32,8 @@
                         </div>
     
                         <div class="form-group">
-                            <label for="password1"> Password:</label>
-                            <input type="password" name="password1" class="form-control form-control-name" required
+                            <label for="password"> Password:</label>
+                            <input type="password" name="password" class="form-control form-control-name" required
                                 id="Password1" placeholder="Enter Your Password">
                         </div>
 
@@ -96,4 +60,45 @@
     </div>
 
 
+
     {% endblock content %}
+
+
+
+    {% block scriptblock %}
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#contact-form').submit(function(e) {
+                e.preventDefault();
+                password = document.getElementById('Password1')
+                password1 = document.getElementById('Password2')
+                if (password.value == password1.value) {
+                    var formData = new FormData(this);
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/account/', // Update this URL with your Django API endpoint
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            localStorage.setItem('account_create','Account created successfully')
+                            window.location.href = '/login/'
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr.responseJSON.email[0])
+                            if (xhr.responseJSON.email[0]){
+                                showNotification(xhr.responseJSON.email[0],false)
+                            }
+                            console.error('Error creating account:', error);
+                        }
+                    });
+                }
+                else{
+                    showNotification('Password does not match')
+                }
+            });
+        });
+    </script>
+    
+    {% endblock %}

@@ -96,8 +96,26 @@
             headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
             success: function(response,t,xhr){
                 if (xhr.status == 200) {
-                    $('#account_list').append('<li class="list-inline-item"> <i class="ti-user"></i> <a href="{% url "profile"%}"> '+ response.data.first_name +' '+ response.data.last_name +' </a> </li> <li class="list-inline-item"> <a href=" {% url "Logout" %}"> Logout </a>  </li>')
+                    $('#account_list').append('<li class="list-inline-item"> <i class="ti-user"></i> <a href="{% url "profile"%}"> '+ response.data.first_name +' '+ response.data.last_name +' </a> </li> <li class="list-inline-item"> <a href="#" onclick="logout()"> Logout </a>  </li>')
                 }
+            }
+        })
+    }
+</script>
+
+<script>
+    function logout(){
+        console.log('Loguot')
+        $.ajax({
+            url: '/api/logout/',
+            type : 'POST',
+            data: {'refresh_token':sessionStorage.getItem('refresh_token')},
+            headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+            success: function(response,t,xhr){
+                console.log(response)
+                sessionStorage.removeItem('refresh_token')
+                sessionStorage.removeItem('token')
+                window.location.href = '/login/'
             }
         })
     }

@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+
+{% block page_title %}
+Delete Blog: {{deleteblog.Blog_title}}
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; position: absolute; top: 20%; left: 40%;">
+    <p>
+        Are You Sure to Delete This Account
+    </p>
+    <div style="display: flex; flex-direction: column;">
+        <p>
+            Name : <span id="Title" ></span>
+        </p>
+        <p>
+            Email : <span id="UploadBy" ></span>
+        </p>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+        <input type="submit" onclick="DeleteBlog()" class="btn btn-danger" value="Delete">
+    </div>
+</div>
+{% endblock content %}
+
+{% block scriptblock %}
+
+<script>
+	if (!sessionStorage.getItem('token')) {
+			window.location.href = "/login/?next=index";
+		}
+        const urlparam = new URLSearchParams(window.location.search)
+    const slug = urlparam.get('blog')
+</script>
+
+<script>
+    $.ajax({
+    url: '/api/user/',
+    type : 'GET',
+    headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+    success: function(data,t,xhr){
+      if (xhr.status == 200){
+        console.log(data.data)
+        $('#Title').append(data.data.email)
+        $('#UploadBy').append(data.data.first_name+' ' +data.data.last_name)
+      }
+    }
+})
+</script>
+
+<script>
+    function DeleteBlog(){
+        $.ajax({
+            url: '/api/account/',
+            type : 'DELETE',
+            headers: {
+				'Authorization':"Bearer "+ sessionStorage.getItem('token')
+			},
+            success : function(data,t,xhr){
+                if (xhr.status == 204) {
+                    localStorage.setItem('delete_message','Your is Delete')
+                    sessionStorage.removeItem('refresh_token')
+                    sessionStorage.removeItem('token')
+                    window.location.href = '/login/'
+                }
+                else{
+                    showNotification(xhr.responseJSON.message,false)
+                    console.log('Something Went Wrong')
+                }
+            }
+        })
+    }
+</script>
+
+{% endblock %}

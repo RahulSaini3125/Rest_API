@@ -64,7 +64,7 @@
                             <p id="Account_status" class="text-muted mb-0">
                                 <!-- javascript -->
                             </p>
-                            <a class="text-danger" href="">
+                            <a class="text-danger" href="{% url 'DeleteAccount' %}">
                                 <i class="ti-na"></i>
                                 Delete Account</a>
                         </div>
@@ -74,10 +74,12 @@
                         <div class="col-sm-3">
                             <p class="mb-0">About You</p>
                         </div>
-                        <div class="col-sm-9">
-                            <p id="about_you" class="text-muted mb-0">
-                                about You
-                            </p>
+                        <div class="col-sm-9 d-flex justify-space-between" id="about_you_div">
+                            <textarea type="text" style="display: none;" name="" id="about_you_id"></textarea>
+                            <p id="about_you" class="text-muted mb-0"></p>
+                            <a href="#" id="about__submit_btn" style="display: none;" onclick="about_you_submit()"> Submit </a>
+                            <a href="" id="about__edit_btn" style="display: none;" onclick="about_you_click()"> <i class="ti-plus"></i> Edit About You</a>
+                            <a href="#" id="about_btn" style="display: none;" onclick="about_you_click()"> <i class="ti-plus"></i> Add About You</a>
                         </div>
                     </div>
                     <hr>
@@ -160,7 +162,6 @@
 
 <script>
     function change_email(){
-        console.log('email')
         localStorage.setItem('email',true)
         window.location.href = "/change/"
     }
@@ -185,10 +186,15 @@
             type : 'GET',
             headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
             success: function(response,t,xhr){
-                console.log(response.data)
                 if (xhr.status == 200) {
                     $('#email_id').html(response.data.email)
-                    $('#about_you').html(response.data.aboutYou)
+                    if (response.data.aboutYou) {
+                        $('#about_you').html(response.data.aboutYou)   
+                        $('#about__edit_btn').css('display','block')
+                    }
+                    else{
+                        $('#about_btn').css('display','block')
+                    }
                     $('#bloger_name').html(response.data.bloger_name)
                     $('#user_full_name').html(response.data.first_name + ' ' +response.data.last_name)
                     if (response.data.is_active) {
@@ -209,18 +215,65 @@
             headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
             success : function(data,t,xhr){
 				if (xhr.status == 200) {
-					blog_display(data)
                     $('#total_blog').html(data.length)
 				}
 				else{
-					console.log('Something Went Wrong')
+                    showNotification('Something Went Wrong',false)
 				}
             }
         })
 
     }
 </script>
+<script>
+    function  about_you_click(){
+        event.preventDefault();
+        if ($('#about_you').html() == '') {
+            $('#about_you_id').css('display','block')
+            $('#about_btn').css('display','none')
+            $('#about__submit_btn').css('display','block')
 
+        }
+        else{
+            $('#about_you').css('display','none')
+            $('#about__edit_btn').css('display','none')
+            text_value = $('#about_you').html();
+            $('#about_you_id').css('display','block')
+            $('#about_you_id').html(text_value)
+            $('#about__submit_btn').css('display','block')
+        }
+    }
+</script>
+<script>
+    function about_you_submit(){
+        event.preventDefault();
+        aboutYou_text = $('#about_you_id').val()
+        $.ajax({
+        url: '/api/update_about_you/',  // URL endpoint to your Django view
+        type: 'PUT',  // Use PUT method to update data
+        headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+        data: {
+            aboutYou: aboutYou_text  // Send the aboutYou_text in the request data
+        },
+        success: function(response) {
+            $('#about_you').css('display','block')
+            $('#about_you').html(response.aboutYou)
+            $('#about__submit_btn').css('display','none')
+            $('#about_you_id').css('display','none')
+            if(response.aboutYou == ''){
+                $('#about_btn').css('display','block')
+            }
+            else{
+                $('#about__edit_btn').css('display','block')
+            }
+            showNotification('About you updated successfully',true)
+        },
+        error: function(xhr, status, error) {
+            showNotification('Something Went Wrong',false)
+        }
+    });
+    }
+</script>
 {% endblock scriptblock %}
 
 {% block footerblock %}
