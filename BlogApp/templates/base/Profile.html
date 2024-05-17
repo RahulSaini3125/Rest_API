@@ -216,6 +216,7 @@
             success : function(data,t,xhr){
 				if (xhr.status == 200) {
                     $('#total_blog').html(data.length)
+                    blog_display(data)
 				}
 				else{
                     showNotification('Something Went Wrong',false)

@@ -27,9 +27,7 @@ class AccountAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
-        print('5555555555555555555555555555555555555')
         try:
-            print(request,"8888888888888888888888888888888888888888888")
             user = User.objects.get(id = request.user.id)
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -135,7 +133,6 @@ class SingleBlogAPI(APIView):
     # Update Blog
     def put(self,request, slug, format = None):
         try:
-            print(request.data)
             blog = BlogModels.objects.get(Blog_slug = slug)
             serializer = BlogModelsSerializer(blog,data=request.data,partial = True)
             if serializer.is_valid():
@@ -162,7 +159,6 @@ class CommentAPI(APIView):
             comment = Comment.objects.filter(blog = blog).order_by('-id')
             user = User.objects.all()
             commentserializers = CommentSerializer(comment, many = True)
-            print(commentserializers.data)
             data = commentserializers.data
             for d in data:
                 for u in user:
@@ -171,7 +167,6 @@ class CommentAPI(APIView):
                         break
                 else:
                         d['comment_by'] = 'Unkown'
-            print(data)
             return Response(status= status.HTTP_200_OK,data=data)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST,data={'message':str(e)})
@@ -227,7 +222,6 @@ class LikeBlogAPI(APIView):
             data['user_id'] = request.user.id
             return Response(status=status.HTTP_202_ACCEPTED,data={'message':'Blog Like Successfully','data':data})
         except Exception as e:
-            print(e)
             return Response(status=status.HTTP_400_BAD_REQUEST,data={'message':'Something Went Wrong'}) 
         
 class DLikeBlogAPI(APIView):
@@ -241,7 +235,6 @@ class DLikeBlogAPI(APIView):
             data['user_id'] = request.user.id
             return Response(status=status.HTTP_202_ACCEPTED,data={'message':'Blog DisLike Successfully','data':data})
         except Exception as e:
-            print(e)
             return Response(status=status.HTTP_400_BAD_REQUEST,data={'message':'Something Went Wrong'}) 
 
 # class LogoutAPI(APIView)     
@@ -258,7 +251,6 @@ class GetUserDetailsAPI(APIView):
 
             return Response(status=status.HTTP_200_OK,data={'message':'Successfully','data':serializer.data})
         except Exception as e:
-            print(e)
             return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'Something Went Wrong'})
         
 class UserBlogAPI(APIView):
@@ -303,7 +295,6 @@ class AboutUserAPI(APIView):
                             da['Blog_Category'] = None
                 return Response(status=status.HTTP_200_OK,data={'message':'Successfully','data':{'user':serializer_user.data,'blog':data}})
         except Exception as e:
-                print(e)
                 return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'Something Went Wrong'})
         
 
@@ -366,7 +357,6 @@ class VerifyOTPAndUpdateEmail(APIView):
             # Check if the new email is already registered
             if get_user_model().objects.exclude(pk=user.pk).filter(email=new_email).exists():
                 return Response({"error": "Email already registered."}, status=status.HTTP_400_BAD_REQUEST)
-            print(type(user.otp))
             if user.otp == otp:
                 user.email = new_email
                 user.save()
