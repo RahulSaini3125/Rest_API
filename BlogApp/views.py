@@ -101,7 +101,7 @@ def delete_view(request):
 
 def delete_account_view(request):
 
-    return render(request, 'login_signup/deleteblog.html')
+    return render(request, 'login_signUp/deleteblog.html')
 
 # #########################################################################
 def Category_view(request):

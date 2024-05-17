@@ -156,5 +156,49 @@
                 }
             }
     </script>
+<script>
+    $(document).ready(function() {
+        $('#contact-form').on('submit', function(event) {
+            event.preventDefault();
+
+            const currentPassword = $('#Current-password').val();
+            const newPassword = $('#password1').val();
+            const confirmPassword = $('#password2').val();
+
+            if (newPassword !== confirmPassword) {
+                showNotification('New password and confirm password do not match!',false)
+                return;
+            }
+
+            $.ajax({
+                url: '/api/ChangePasswordView/',
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token') // Adjust based on your authentication method
+                },
+                data:{
+                    'old_password': currentPassword,
+                    'new_password': newPassword
+                },
+                success: function(response,t,xhr) {
+                    if (xhr.status == 203){
+                        showNotification('Wrong Current Password',false)
+                    }
+                    else{
+                        localStorage.setItem('new_email',"Your Password Change please Login")
+                        sessionStorage.removeItem('refresh_token')
+                        sessionStorage.removeItem('token')
+                        window.location.href = '/login/'
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showNotification('Something Went Wrong',false)
+                }
+            });
+        });
+    });
+</script>
+
 
 {% endblock scriptblock %}

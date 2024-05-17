@@ -42,3 +42,7 @@ class EmailAvailabilitySerializer(serializers.Serializer):
 class OTPVerificationSerializer(serializers.Serializer):
     new_email = serializers.EmailField()
     otp = serializers.CharField(max_length=6)
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)

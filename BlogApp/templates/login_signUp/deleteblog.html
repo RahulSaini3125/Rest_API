@@ -60,7 +60,7 @@ Delete Blog: {{deleteblog.Blog_title}}
 			},
             success : function(data,t,xhr){
                 if (xhr.status == 204) {
-                    localStorage.setItem('delete_message','Your is Delete')
+                    localStorage.setItem('delete_message','Your Account is Delete')
                     sessionStorage.removeItem('refresh_token')
                     sessionStorage.removeItem('token')
                     window.location.href = '/login/'

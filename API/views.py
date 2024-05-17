@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 from random import randint
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth import update_session_auth_hash
 # Create your views here.
 
 class AccountAPI(APIView):
@@ -318,13 +319,13 @@ class CheckEmailAvailability(APIView):
                 subject = 'Your OTP for verification'
                 message = f'Your OTP is: {otp}'
                 recipient_list = [email]
-                # send_mail(
-                #     subject,
-                #     message,
-                #     settings.EMAIL_HOST_USER,  # Sender's email (configured in settings)
-                #     recipient_list,
-                #     fail_silently=False,
-                #     )
+                send_mail(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,  # Sender's email (configured in settings)
+                    recipient_list,
+                    fail_silently=False,
+                    )
                 return Response({"available": True}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -363,4 +364,23 @@ class VerifyOTPAndUpdateEmail(APIView):
                 return Response({"message": "Email updated successfully."}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            if not user.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=203)
+
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+
+            return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
