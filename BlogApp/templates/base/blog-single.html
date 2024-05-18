@@ -201,7 +201,7 @@
           }
           text += '</div>'
           text += '<h4 class="mb-0 mt-4"> <a href="{% url "AboutUser" %}?profile='+ user.user_id +' ">'+ user.first_name +' '+ user.last_name +'</h4></a>'
-          text += '<p>'+ user.bloger_name +'</p><p>' + user.aboutYou + '</p>'
+          text += '<p>' + user.aboutYou + '</p>'
           $('#about_author_blog').append(text)
         commentlist()
       }

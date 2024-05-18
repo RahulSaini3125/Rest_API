@@ -76,7 +76,7 @@ class BlogModels(models.Model):
     Blog_description = models.CharField(max_length = 400)
     Blog_slug = models.CharField(max_length = 200, unique = True, null = True, blank = True)
     Blog_content_heading = models.CharField(max_length = 100)
-    Blog_content = models.CharField(null=True,blank=True)
+    Blog_content = RichTextUploadingField()
     Blog_images = models.ImageField(upload_to='media/')
     Blog_Category = models.ForeignKey(CategoryModels, on_delete = models.PROTECT)
     BLog_upload_date = models.DateField(auto_now_add = True)

@@ -75,6 +75,38 @@ Upload Blog
 
 {% block scriptblock %}
 
+
+<script>
+    // Function to extract CSRF token from cookies
+    function getCSRFToken() {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                return cookie.substring('csrftoken='.length, cookie.length);
+            }
+        }
+        return null;
+    }
+
+    // Replace 'Content' with the ID of your textarea
+    CKEDITOR.replace('Content', {
+    filebrowserUploadUrl: '/media/uploads/',  // Update the URL to point to the uploads endpoint
+    filebrowserBrowseUrl: '/media/uploads/', // Update the URL to point to the uploads endpoint
+    filebrowserUploadMethod: 'GET',  // Use GET method for file uploads
+    // Provide CSRF token in the headers
+    on: {
+        instanceReady: function() {
+            this.on('fileUploadRequest', function(evt) {
+                var xhr = evt.data.fileLoader.xhr;
+                xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
+            });
+        }
+    }
+});
+
+</script>
+
 <script>
 	if (!sessionStorage.getItem('token')) {
 			window.location.href = "/login/?next=index";
@@ -102,6 +134,7 @@ Upload Blog
 
 <script>
     function UploadBlog(){
+        var content = CKEDITOR.instances.Content.getData();
         console.log($('#Title').val())
         console.log($('#Description').val())
         console.log($('#ContentHeading').val())
@@ -116,7 +149,7 @@ Upload Blog
             formData.append('Blog_title', $('#Title').val());
             formData.append('Blog_description', $('#Description').val());
             formData.append('Blog_content_heading', $('#ContentHeading').val());
-            formData.append('Blog_content', $('#Content').val());
+            formData.append('Blog_content', content);
             formData.append('Blog_images', $('#imageUrl')[0].files[0]); // Append the file
             formData.append('Blog_Category', $('#BlogType').val());
 

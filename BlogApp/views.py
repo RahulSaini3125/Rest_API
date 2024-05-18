@@ -4,10 +4,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
 import random
+import os
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 # Create your views here.
  
+
+
+
 # #########################################################################################
 def SignUp_views(request):
     return render(request,'login_signUp/SignUp.html')

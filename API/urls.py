@@ -16,8 +16,10 @@ urlpatterns = [
     path('aboutuser/', AboutUserAPI.as_view(), name ="aboutuser"),
     path('account/', AccountAPI.as_view()),
     path('check_email/', CheckEmailAvailability.as_view()),
+    path('check_email_password/', CheckEmailAvailabilityPassword.as_view()),
     path('update_about_you/', UserAboutYouUpdateAPIView.as_view(), name='update_about_you'),
     path('verify-otp-and-update-email/', VerifyOTPAndUpdateEmail.as_view(), name='verify_otp_and_update_email'),
     path('ChangePasswordView/', ChangePasswordView.as_view(), name='ChangePasswordView'),
+    path('VerifyOTP/', VerifyOTP.as_view()),
 
 ]

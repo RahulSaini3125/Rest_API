@@ -384,3 +384,53 @@ class ChangePasswordView(APIView):
             return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CheckEmailAvailabilityPassword(APIView):
+    def post(self, request):
+        email = request.POST.get('email')
+        User = get_user_model()
+        try:
+                # Check if the email is already registered
+                user = User.objects.get(email=email)
+                otp = self.generate_otp()
+                user.otp = otp
+                user.save()
+                subject = 'Your OTP for verification'
+                message = f'Your OTP is: {otp}'
+                recipient_list = [email]
+                send_mail(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,  # Sender's email (configured in settings)
+                    recipient_list,
+                    fail_silently=False,
+                    )
+                return Response({"available": True}, status=status.HTTP_200_OK)
+               
+        except User.DoesNotExist:
+                # If email is available, generate OTP and store it in the current user object
+                return Response({"available": False}, status=status.HTTP_200_OK)
+
+    def generate_otp(self):
+        # Generate a random 6-digit OTP
+        return str(randint(100000, 999999))
+
+
+
+class VerifyOTP(APIView):
+    def post(self, request):
+        serializer = OTPVerificationSerializer(data=request.data)
+        if serializer.is_valid():
+            new_email = serializer.validated_data['new_email']
+            otp = int(serializer.validated_data['otp'])
+            user = User.objects.get(email=new_email)
+            # Check if the new email is already registered
+            if get_user_model().objects.filter(email=new_email).exists():
+                pass
+            else:
+                return Response({"error": "Email not registered."}, status=status.HTTP_400_BAD_REQUEST)
+            if user.otp == otp:
+                return Response({"message": "OTP Verify Successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

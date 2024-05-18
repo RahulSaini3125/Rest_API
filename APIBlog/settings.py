@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'BlogApp',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -148,7 +150,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = 'staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = 'MEDIA'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 
 CKEDITOR_UPLOAD_PATH="uploads/"
 
@@ -163,7 +165,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-# DEFAULT_FROM_EMAIL = 'donotreplyworldblog@gmail.com'
+DEFAULT_FROM_EMAIL = 'donotreplyworldblog@gmail.com'
 
 # JWT Authentication
 SIMPLE_JWT = { "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
