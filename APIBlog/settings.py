@@ -89,15 +89,15 @@ WSGI_APPLICATION = 'APIBlog.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DataBaseName'),
-            'USER': os.getenv('DataBaseUser'),
-            'PASSWORD': os.getenv('DataBasePassword'),
-            'HOST': os.getenv('DataBaseHost'),
-            'PORT': os.getenv('DataBasePort'),
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DataBaseName'),
+        'USER': os.getenv('DataBaseUser'),
+        'PASSWORD': os.getenv('DataBasePassword'),
+        'HOST': os.getenv('DataBaseHost'),
+        'PORT': os.getenv('DataBasePort'),
         }
     }
 
@@ -143,14 +143,14 @@ AUTH_USER_MODEL= 'API.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# settings.py
 
-# Production static settings
-# use for making static files  folder
-STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CKEDITOR_UPLOAD_PATH="uploads/"
 
