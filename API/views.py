@@ -432,5 +432,35 @@ class VerifyOTP(APIView):
             if user.otp == otp:
                 return Response({"message": "OTP Verify Successfully"}, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Invalid OTP."}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ForgetPasswordView(APIView):
+    def post(self,request):
+        try:
+            data = request.data
+            user = User.objects.get(email = data['old_password'])
+            user.set_password(data['new_password'])
+            user.save()
+            return Response(status=status.HTTP_200_OK,data='Ok')
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,data={'error':'Email is not registered'})
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'Something Went Wrong'})
+
+
+class UserProfileImageUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        try:
+            user_profile= User.objects.get(id=request.user.id)
+            serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,data={'error':'Something Went Wrong'})
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST,data={'error':'Something Went Wrong'})

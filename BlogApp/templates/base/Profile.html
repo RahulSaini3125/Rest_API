@@ -20,7 +20,8 @@
                 <div class="col-lg-4">
                     <div class="card"  style="border: 0px;" >
                         <div class="card-body text-center" id="user_profile" >
-                            <h2 class="my-3" id="user_full_name"  >
+                            <input type="file" style="display: none;" id="image_edit_input" name="" accept="image/*">
+                            <h2 class="my-3" id="user_full_name" style="text-transform: capitalize;"  >
                                 <!-- javascript -->
                             </h2>
                             <p class="text-muted mb-1" id="bloger_name" >
@@ -201,10 +202,10 @@
                         $('#Account_status').html('Active')
                     }
                     if (response.data.user_profile) {
-                        $('#user_profile').prepend(' <img src="'+ response.data.user_profile +'"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">')
+                        $('#user_profile').prepend(' <img src="'+ response.data.user_profile +'"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;"><div class ="image_edit"  > <a href="#"  onclick="editImage()"> <i class="ti-pencil-alt"></i> </a> </div> ')
                     }
                     else{
-                        $('#user_profile').prepend(' <img src="{% static "images/blog-user-2.jpg" %}"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">')
+                        $('#user_profile').prepend(' <img src="{% static "images/blog-user-2.jpg" %}"alt="avatar" class="rounded-circle img-fluid" style="width: 250px; height: 240px;">  <div class ="image_edit"  > <a href="#"  onclick="editImage()"> <i class="ti-pencil-alt"></i> </a> </div>  ')
                     }
                 }
             }
@@ -275,6 +276,53 @@
     });
     }
 </script>
+
+<script>
+    image_edit_input = document.getElementById('image_edit_input')
+        function editImage() {
+            event.preventDefault();
+            $('#image_edit_input').click()
+        }
+        image_edit_input.addEventListener('change', function () {
+        const file = image_edit_input.files[0];
+        if (file && file.type.startsWith('image/')) {
+            api_file(file)
+            // const reader = new FileReader();
+            // reader.onload = function (e) {
+            //     imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+            // };
+            // reader.readAsDataURL(file);
+        } else {
+            showNotification('Please Select image',false)
+        }
+    });
+</script>
+
+<script>
+
+    function api_file(file){
+        form = new FormData()
+        form.append('user_profile',file)
+        $.ajax({
+            url:'/api/UserProfileImageUploadView/',
+            type : 'POST',
+            headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
+            data: form,
+            processData: false, // Prevent jQuery from processing the data
+            contentType: false,
+            success: function(data,t,xhr){
+                console.log(xhr.status)
+                window.location.reload()
+            },error: function(xhr,status,error){
+                showNotification('Something Went Wrong',false)
+            }
+        });
+    }
+
+</script>
+
+
+
 {% endblock scriptblock %}
 
 {% block footerblock %}

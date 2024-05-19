@@ -27,17 +27,6 @@
                     <div class="collapse navbar-collapse" id="navbar-collapse">
                         <ul id="menu" class="menu navbar-nav mx-auto">
                             <li class="nav-item"><a href="{% url 'Home' %}" class="nav-link">Home</a></li>
-                            <!-- <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    Blog Posts
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                                    <a class="dropdown-item" href="standard-fullwidth.html">Standard Fullwidth</a>
-                                    <a class="dropdown-item" href="standard-left-sidebar.html">Standard Left Sidebar</a>
-                                    <a class="dropdown-item" href="standard-right-sidebar.html">Standard Right Sidebar</a>
-                                </div>
-                            </li> -->
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -96,7 +85,7 @@
             headers: {"Authorization": "Bearer " + sessionStorage.getItem('token')},
             success: function(response,t,xhr){
                 if (xhr.status == 200) {
-                    $('#account_list').append('<li class="list-inline-item"> <i class="ti-user"></i> <a href="{% url "profile"%}"> '+ response.data.first_name +' '+ response.data.last_name +' </a> </li> <li class="list-inline-item"> <a href="#" onclick="logout()"> Logout </a>  </li>')
+                    $('#account_list').append('<li class="list-inline-item"> <i class="ti-user"></i> <a  href="{% url "profile"%}"  style="text-transform: capitalize;" > '+ response.data.first_name +' '+ response.data.last_name +' </a> </li> <li class="list-inline-item"> <a href="#" onclick="logout()"> Logout </a>  </li>')
                 }
             }
         })

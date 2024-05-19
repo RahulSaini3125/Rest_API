@@ -18,7 +18,7 @@ Edit Blog
             <h2 class="mb-4">Update Blog</h2>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group" id="imagePreview">
                             <input type="image" id="Uploadimage" alt="" style="width: 900px;">
                         </div>
 
@@ -74,6 +74,8 @@ Edit Blog
 
 {% block scriptblock %}
 
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
 
 
 <script>
@@ -90,20 +92,21 @@ Edit Blog
     }
 
     // Replace 'Content' with the ID of your textarea
-    CKEDITOR.replace('Content', {
-    filebrowserUploadUrl: '/media/uploads/',  // Update the URL to point to the uploads endpoint
-    filebrowserBrowseUrl: '/media/uploads/', // Update the URL to point to the uploads endpoint
-    filebrowserUploadMethod: 'GET',  // Use GET method for file uploads
-    // Provide CSRF token in the headers
-    on: {
-        instanceReady: function() {
-            this.on('fileUploadRequest', function(evt) {
-                var xhr = evt.data.fileLoader.xhr;
-                xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
-            });
-        }
-    }
-});
+    CKEDITOR.replace('Content')
+//     CKEDITOR.replace('Content', {
+//     filebrowserUploadUrl: '/media/uploads/',  // Update the URL to point to the uploads endpoint
+//     filebrowserBrowseUrl: '/media/uploads/', // Update the URL to point to the uploads endpoint
+//     filebrowserUploadMethod: 'GET',  // Use GET method for file uploads
+//     // Provide CSRF token in the headers
+//     on: {
+//         instanceReady: function() {
+//             this.on('fileUploadRequest', function(evt) {
+//                 var xhr = evt.data.fileLoader.xhr;
+//                 xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
+//             });
+//         }
+//     }
+// });
 
 </script>
 
@@ -129,7 +132,9 @@ Edit Blog
         $('#Title').val(data.Blog.blog.Blog_title)
         $('#Description').val(data.Blog.blog.Blog_description)
         $('#ContentHeading').val(data.Blog.blog.Blog_content_heading)
-        $('#Content').html(data.Blog.blog.Blog_content)
+        var editor = CKEDITOR.instances['Content'];
+        editor.setData(data.Blog.blog.Blog_content);
+        // $('#Content').html(data.Blog.blog.Blog_content)
         $('#Uploadimage').attr('src',data.Blog.blog.Blog_images)
       }
     }
@@ -180,6 +185,25 @@ $('#myForm').submit(function() {
     });
 });
 
+</script>
+
+
+<script>
+    image_edit_input = document.getElementById('imageUrl')
+    image_edit_input.addEventListener('change', function () {
+        const file = image_edit_input.files[0];
+        if (file && file.type.startsWith('image/')) {
+            console.log('edit')
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').empty()
+                $('#imagePreview').prepend('<img src="'+e.target.result+'" style="width: 900px; alt="Image Preview">')
+            };
+            reader.readAsDataURL(file);
+        } else {
+            showNotification('Please Select image',false)
+        }
+    })
 </script>
 
 

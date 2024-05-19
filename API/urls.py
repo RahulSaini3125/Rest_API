@@ -21,5 +21,7 @@ urlpatterns = [
     path('verify-otp-and-update-email/', VerifyOTPAndUpdateEmail.as_view(), name='verify_otp_and_update_email'),
     path('ChangePasswordView/', ChangePasswordView.as_view(), name='ChangePasswordView'),
     path('VerifyOTP/', VerifyOTP.as_view()),
+    path('ForgetPasswordView/', ForgetPasswordView.as_view()),
+    path('UserProfileImageUploadView/', UserProfileImageUploadView.as_view()),
 
 ]

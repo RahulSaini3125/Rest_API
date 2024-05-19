@@ -98,6 +98,16 @@ input[type=number] {
   cursor: pointer;
 }
 
+.image_edit{
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  position: relative;
+  bottom: 20px;
+  right: 10px;
+  cursor: pointer;
+}
+
 .Add_about_you:hover{
   color: #ce8460 ;
 }
