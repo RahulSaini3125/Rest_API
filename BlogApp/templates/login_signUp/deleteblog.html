@@ -43,8 +43,8 @@ Delete Blog: {{deleteblog.Blog_title}}
     success: function(data,t,xhr){
       if (xhr.status == 200){
         console.log(data.data)
-        $('#Title').append(data.data.email)
-        $('#UploadBy').append(data.data.first_name+' ' +data.data.last_name)
+        $('#UploadBy').append(data.data.email)
+        $('#Title').append(data.data.first_name+' ' +data.data.last_name)
       }
     }
 })

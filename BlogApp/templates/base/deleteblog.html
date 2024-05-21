@@ -45,10 +45,11 @@ Delete Blog: {{deleteblog.Blog_title}}
 			},
     success: function(data,t,xhr){
       if (xhr.status == 200){
-        console.log(data.Blog)
-        $('#Title').append(data.Blog.Blog_title)
-        $('#UploadBy').append(data.Blog.Blog_upload_by)
-        $('#UploadOn').append(data.Blog.BLog_upload_date)
+        console.log('dfjgnbmvdnfkj')
+        console.log(data.Blog.blog)
+        $('#Title').append(data.Blog.blog.Blog_title)
+        $('#UploadBy').append(data.Blog.blog.Blog_upload_by)
+        $('#UploadOn').append(data.Blog.blog.BLog_upload_date)
       }
     }
 })
