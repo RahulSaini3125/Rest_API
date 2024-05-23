@@ -178,7 +178,7 @@
         $('#upload_fullname').append(Blog.Blog_upload_by_name)
         $('#Upload_date').append(Blog.BLog_upload_date)
         $('#Blog_img').append('<img src="'+ Blog.Blog_images +'" class="img-fluid w-100" alt="featured-image"/>')
-        $('#blog_text').append(' <p> '+ Blog.Blog_description +' </p> <h2 class="mt-4 mb-3">'+Blog.Blog_content_heading+'</h2> <pre>' + Blog.Blog_content + '</pre>')
+        $('#blog_text').append(' <p> '+ Blog.Blog_description +' </p> <h2 class="mt-4 mb-3">'+Blog.Blog_content_heading+'</h2> <pre  class="wrapped-content" >' + Blog.Blog_content + '</pre>')
         var total_like = Blog.Blog_like
         let user_like =  false
         for (let index = 0; index < total_like.length; index++) {

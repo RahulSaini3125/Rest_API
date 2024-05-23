@@ -83,23 +83,23 @@ WSGI_APPLICATION = 'APIBlog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DataBaseName'),
-        'USER': os.getenv('DataBaseUser'),
-        'PASSWORD': os.getenv('DataBasePassword'),
-        'HOST': os.getenv('DataBaseHost'),
-        'PORT': os.getenv('DataBasePort'),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DataBaseName'),
+#         'USER': os.getenv('DataBaseUser'),
+#         'PASSWORD': os.getenv('DataBasePassword'),
+#         'HOST': os.getenv('DataBaseHost'),
+#         'PORT': os.getenv('DataBasePort'),
+#         }
+#     }
 
 
 # Password validation
