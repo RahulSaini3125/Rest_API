@@ -90,16 +90,16 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DataBaseName'),
-#         'USER': os.getenv('DataBaseUser'),
-#         'PASSWORD': os.getenv('DataBasePassword'),
-#         'HOST': os.getenv('DataBaseHost'),
-#         'PORT': os.getenv('DataBasePort'),
-#         }
-#     }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DataBaseName'),
+        'USER': os.getenv('DataBaseUser'),
+        'PASSWORD': os.getenv('DataBasePassword'),
+        'HOST': os.getenv('DataBaseHost'),
+        'PORT': os.getenv('DataBasePort'),
+        }
+    }
 
 
 # Password validation
